@@ -34,6 +34,17 @@ function App() {
     });
   }
 
+  function toggleCheckTodo(todoId) {
+    setTodos((currentTodos) => {
+      const newTodos = currentTodos.map((todo) => {
+        if (todo.id === todoId) {
+          return { ...todo, isChecked: !todo.isChecked };
+        } else return todo;
+      });
+      return newTodos;
+    });
+  }
+
   // Function to convert the fetched weather code to our weather status object
   function convertWeatherCodeToEmoji(weatherCode) {
     switch (weatherCode) {
@@ -52,7 +63,22 @@ function App() {
 
   // Function to fetch the weather data for the user's location
   async function getWeatherData(latitude, longitude) {
-    return 0;
+    try {
+      const response = await fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
+      );
+
+      if (!response.ok) {
+        throw new Error(response.status, "Fetch failed");
+      }
+
+      const data = await response.json();
+      return data.current_weather.weathercode;
+
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   // Function to save the selected weather filter
@@ -78,43 +104,23 @@ function App() {
     }
   }
 
-  function toggleCheckTodo(todoId) {
-    setTodos((currentTodos) => {
-      const newTodos = currentTodos.map((todo) => {
-        if (todo.id === todoId && todo.isChecked === true) {
-          return {
-            ...todo,
-            isChecked: false,
-          };
-        } else if (todo.id === todoId && todo.isChecked === false) {
-          return {
-            ...todo,
-            isChecked: true,
-          };
-        } else return todo;
-      });
-      console.log(newTodos);
-      return newTodos;
-    });
-  }
-
-  const filteredTodos = [];
+  const filteredTodos = filterTodos(currentFilter);
 
   return (
     <>
       <Header />
       <main>
         <InfoBox emoji={weatherStatus.emoji} />
-        {/* <SelectWeather handleChange={handleWeatherSelect} /> */}
+        <SelectWeather handleChange={handleWeatherSelect} />
         <TodoList
           title="Todos to be completed"
           onChange={toggleCheckTodo}
-          todos={todos.filter((todo) => todo.isChecked === false)}
+          todos={filteredTodos.filter((todo) => !todo.isChecked)}
         />
         <TodoList
           title="Done"
           onChange={toggleCheckTodo}
-          todos={todos.filter((todo) => todo.isChecked === true)}
+          todos={filteredTodos.filter((todo) => todo.isChecked)}
         />
       </main>
     </>
