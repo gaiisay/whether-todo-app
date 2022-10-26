@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import AddTodo from "./components/AddTodo";
 import Header from "./components/Header";
@@ -41,6 +42,18 @@ function App() {
       });
       return newTodos;
     });
+  }
+
+  function addTodo(newTodo) {
+    setTodos([
+      ...todos,
+      {
+        id: nanoid(),
+        title: newTodo.title,
+        isChecked: false,
+        weather: newTodo.weather,
+      },
+    ]);
   }
 
   // Function to convert the fetched weather code to our weather status object
@@ -113,7 +126,7 @@ function App() {
           todos={filteredTodos.filter((todo) => !todo.isChecked)}
         />
         <TodoList title="Done" onChange={toggleCheckTodo} todos={filteredTodos.filter((todo) => todo.isChecked)} />
-        <AddTodo />
+        <AddTodo addTodo={addTodo} />
       </main>
     </>
   );
