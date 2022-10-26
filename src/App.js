@@ -1,4 +1,6 @@
+import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
+import AddTodo from "./components/AddTodo";
 import Header from "./components/Header";
 import InfoBox from "./components/InfoBox";
 import SelectWeather from "./components/SelectWeather";
@@ -15,10 +17,7 @@ function App() {
     async function determineCurrentWeather() {
       try {
         const location = await getUserLocation();
-        const weatherCode = await getWeatherData(
-          location.coords.latitude,
-          location.coords.longitude
-        );
+        const weatherCode = await getWeatherData(location.coords.latitude, location.coords.longitude);
         setWeatherStatus(convertWeatherCodeToEmoji(weatherCode));
       } catch (error) {
         console.error(error);
@@ -43,6 +42,18 @@ function App() {
       });
       return newTodos;
     });
+  }
+
+  function addTodo(newTodo) {
+    setTodos([
+      ...todos,
+      {
+        id: nanoid(),
+        title: newTodo.title,
+        isChecked: false,
+        weather: newTodo.weather,
+      },
+    ]);
   }
 
   // Function to convert the fetched weather code to our weather status object
@@ -90,10 +101,7 @@ function App() {
   function filterTodos(currentFilter) {
     switch (currentFilter) {
       case "current":
-        return todos.filter(
-          (todo) =>
-            todo.weather === weatherStatus.weather || todo.weather === "always"
-        );
+        return todos.filter((todo) => todo.weather === weatherStatus.weather || todo.weather === "always");
       case "always":
       case "good":
       case "bad":
@@ -117,11 +125,8 @@ function App() {
           onChange={toggleCheckTodo}
           todos={filteredTodos.filter((todo) => !todo.isChecked)}
         />
-        <TodoList
-          title="Done"
-          onChange={toggleCheckTodo}
-          todos={filteredTodos.filter((todo) => todo.isChecked)}
-        />
+        <TodoList title="Done" onChange={toggleCheckTodo} todos={filteredTodos.filter((todo) => todo.isChecked)} />
+        <AddTodo addTodo={addTodo} />
       </main>
     </>
   );
