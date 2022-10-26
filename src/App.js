@@ -15,7 +15,10 @@ function App() {
     async function determineCurrentWeather() {
       try {
         const location = await getUserLocation();
-        const weatherCode = await getWeatherData(location.coords.latitude, location.coords.longitude);
+        const weatherCode = await getWeatherData(
+          location.coords.latitude,
+          location.coords.longitude
+        );
         setWeatherStatus(convertWeatherCodeToEmoji(weatherCode));
       } catch (error) {
         console.error(error);
@@ -61,7 +64,10 @@ function App() {
   function filterTodos(currentFilter) {
     switch (currentFilter) {
       case "current":
-        return todos.filter((todo) => todo.weather === weatherStatus.weather || todo.weather === "always");
+        return todos.filter(
+          (todo) =>
+            todo.weather === weatherStatus.weather || todo.weather === "always"
+        );
       case "always":
       case "good":
       case "bad":
@@ -72,6 +78,26 @@ function App() {
     }
   }
 
+  function toggleCheckTodo(todoId) {
+    setTodos((currentTodos) => {
+      const newTodos = currentTodos.map((todo) => {
+        if (todo.id === todoId && todo.isChecked === true) {
+          return {
+            ...todo,
+            isChecked: false,
+          };
+        } else if (todo.id === todoId && todo.isChecked === false) {
+          return {
+            ...todo,
+            isChecked: true,
+          };
+        } else return todo;
+      });
+      console.log(newTodos);
+      return newTodos;
+    });
+  }
+
   const filteredTodos = [];
 
   return (
@@ -80,7 +106,16 @@ function App() {
       <main>
         <InfoBox emoji={weatherStatus.emoji} />
         {/* <SelectWeather handleChange={handleWeatherSelect} /> */}
-        <TodoList todos={todos} />
+        <TodoList
+          title="Todos to be completed"
+          onChange={toggleCheckTodo}
+          todos={todos.filter((todo) => todo.isChecked === false)}
+        />
+        <TodoList
+          title="Done"
+          onChange={toggleCheckTodo}
+          todos={todos.filter((todo) => todo.isChecked === true)}
+        />
       </main>
     </>
   );
