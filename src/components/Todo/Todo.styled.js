@@ -3,6 +3,8 @@ import styled, { css } from "styled-components";
 const TodoItem = styled.li`
   padding: 1em;
   margin-bottom: 0.5em;
+  display: flex;
+  justify-content: space-between;
 
   ${({ weather }) =>
     weather === "good" &&

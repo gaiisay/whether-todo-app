@@ -8,6 +8,7 @@ const ButtonStyled = styled.button`
   border-radius: 3px;
   height: 2.5rem;
   width: 6.5rem;
+  cursor: pointer;
 
   ${({ variant }) =>
     variant === "save" &&
