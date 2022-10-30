@@ -1,7 +1,7 @@
 import Todo from "../Todo";
 import { TodoList as List } from "./TodoList.styled.js";
 
-export default function TodoList({ todos, onChange, title }) {
+export default function TodoList({ todos, onChange, title, deleteTodo }) {
   return (
     <>
       <h2>
@@ -16,6 +16,7 @@ export default function TodoList({ todos, onChange, title }) {
               todoId={todo.id}
               key={todo.id}
               weather={todo.weather}
+              deleteTodo={deleteTodo}
             >
               {todo.title}
             </Todo>

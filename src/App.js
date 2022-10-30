@@ -85,8 +85,6 @@ function App() {
 
       const data = await response.json();
       return data.current_weather.weathercode;
-
-      console.log(data);
     } catch (error) {
       console.error(error);
     }
@@ -114,6 +112,10 @@ function App() {
 
   const filteredTodos = filterTodos(currentFilter);
 
+  function deleteTodo(todoId) {
+    setTodos(todos.filter((todo) => todo.id !== todoId));
+  }
+
   return (
     <>
       <Header />
@@ -123,9 +125,15 @@ function App() {
         <TodoList
           title="Todos to be completed"
           onChange={toggleCheckTodo}
+          deleteTodo={deleteTodo}
           todos={filteredTodos.filter((todo) => !todo.isChecked)}
         />
-        <TodoList title="Done" onChange={toggleCheckTodo} todos={filteredTodos.filter((todo) => todo.isChecked)} />
+        <TodoList
+          title="Done"
+          onChange={toggleCheckTodo}
+          deleteTodo={deleteTodo}
+          todos={filteredTodos.filter((todo) => todo.isChecked)}
+        />
         <AddTodo addTodo={addTodo} />
       </main>
     </>
